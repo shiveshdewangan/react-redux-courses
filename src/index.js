@@ -5,12 +5,20 @@ import { Provider } from "react-redux";
 import reducer from "./reducer";
 import App from "./App";
 import "./index.css";
+import thunk from "redux-thunk";
+import { loadCourses } from "./actions";
 
-const store = createStore(
-  reducer,
-  window.__REDUX_DEVTOOLS_EXTENSION__ &&
-    window.__REDUX_DEVTOOLS_EXTENSION__({ trace: true })
-);
+const composeEnhancers =
+  typeof window === "object" && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+        trace: true
+      })
+    : compose;
+
+const enhancer = composeEnhancers(applyMiddleware(thunk));
+
+const store = createStore(reducer, enhancer);
+store.dispatch(loadCourses());
 
 ReactDOM.render(
   <Provider store={store}>
